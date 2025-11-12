@@ -12,12 +12,11 @@ if [ ! -f "schoolshare.db" ]; then
     python -m backend.create_db
     echo "Database created successfully!"
 
-    # Populate data in background to not delay server startup
+    # Populate data immediately before starting server (only on first run)
     if [ -n "$SEOUL_OPENAPI_KEY" ]; then
-        echo "Starting background data collection..."
-        # Run in background but output to stdout so we can see it in Railway logs
-        (sleep 5 && python -m scraper.ingest_school_facilities 2>&1 && echo "✅ Data collection completed!") &
-        echo "Data collection started in background (PID: $!)"
+        echo "Collecting school facility data (this may take 1-2 minutes)..."
+        python -m scraper.ingest_school_facilities
+        echo "✅ Data collection completed!"
     else
         echo "Warning: SEOUL_OPENAPI_KEY not set. Skipping data collection."
     fi
