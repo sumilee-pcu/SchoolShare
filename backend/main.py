@@ -5,12 +5,14 @@ import logging
 from typing import Dict
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from sqlalchemy.exc import SQLAlchemyError
 
 from backend.database import SessionLocal
 from backend.models import Facility, School
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.logger.setLevel(logging.INFO)
 
 FACILITY_TYPE_PARAM_MAP: Dict[str, str] = {

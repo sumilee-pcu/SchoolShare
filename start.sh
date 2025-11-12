@@ -6,21 +6,23 @@ PORT=${PORT:-5001}
 
 echo "Checking database..."
 
-# Check if database exists, if not create it
-if [ ! -f "schoolshare.db" ]; then
-    echo "Database not found. Creating database..."
-    python -m backend.create_db
-    echo "Database created successfully!"
+# Always create/recreate database tables
+echo "Initializing database..."
+python -m backend.create_db
+echo "Database initialized successfully!"
 
-    # Populate data immediately before starting server (only on first run)
-    if [ -n "$SEOUL_OPENAPI_KEY" ]; then
-        echo "Starting data collection (this may take 1-2 minutes)..."
-        python -m scraper.ingest_school_facilities
+# Try to collect fresh data on startup (but don't fail if it errors)
+if [ -n "$SEOUL_OPENAPI_KEY" ]; then
+    echo "Starting data collection (this may take 1-2 minutes)..."
+    if python -m scraper.ingest_school_facilities; then
+        echo "✅ Data collection completed successfully!"
     else
-        echo "Warning: SEOUL_OPENAPI_KEY not set. Skipping data collection."
+        echo "⚠️  Warning: Data collection failed, but continuing to start server..."
+        echo "   The API will return empty results until data is collected."
     fi
 else
-    echo "Database already exists. Skipping initialization."
+    echo "⚠️  Warning: SEOUL_OPENAPI_KEY not set. Skipping data collection."
+    echo "   Please set SEOUL_OPENAPI_KEY environment variable in Railway dashboard."
 fi
 
 echo "Starting gunicorn on port $PORT..."
