@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import os
 from typing import Dict, Iterable, Tuple
 
 from backend.database import SessionLocal, create_db_and_tables
@@ -66,11 +67,16 @@ def _upsert_facility(session, school: School, facility_label: str, availability:
 
 
 def ingest_facilities() -> None:
+    print(f"Loading settings... (target region: {os.getenv('SCHOOLSHARE_TARGET_REGION', '노원구')})")
     settings = ScraperSettings.from_env()
+    print(f"API key configured: {'Yes' if settings.api_key else 'No'}")
+
     create_db_and_tables()
 
+    print("Connecting to Seoul Open API...")
     client = SeoulSchoolAPIClient(settings=settings)
 
+    print("Fetching school data from API...")
     with SessionLocal() as session:
         processed = 0
         for row in client.iter_school_rows():
@@ -86,10 +92,18 @@ def ingest_facilities() -> None:
                 _upsert_facility(session, school, facility_label, availability)
 
             processed += 1
-            if processed % 50 == 0:
+            if processed % 10 == 0:
+                print(f"Processed {processed} schools...")
                 session.commit()
 
         session.commit()
+
+        # Print final statistics
+        total_schools = session.query(School).count()
+        total_facilities = session.query(Facility).count()
+        print(f"\n✅ Data collection completed!")
+        print(f"   Total schools: {total_schools}")
+        print(f"   Total facilities: {total_facilities}")
 
 
 if __name__ == "__main__":
