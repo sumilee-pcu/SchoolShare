@@ -151,6 +151,36 @@ GET /api/facilities?region=노원구&type=gym&availability=개방&limit=50
 - **Database**: SQLite
 - **Data Collection**: Selenium, BeautifulSoup4, Requests
 - **Language**: Python 3.8+
+- **Deployment**: Docker, Gunicorn
+
+## 배포
+
+### Docker를 사용한 배포 (권장)
+
+```bash
+# 1. 환경 변수 설정
+cp .env.example .env
+# .env 파일에 SEOUL_OPENAPI_KEY 입력
+
+# 2. Docker 컨테이너 빌드 및 실행
+docker-compose up -d
+
+# 3. 데이터 수집 (최초 1회)
+docker-compose exec schoolshare-api python -m backend.create_db
+docker-compose exec schoolshare-api python -m scraper.ingest_school_facilities
+
+# 4. API 테스트
+curl http://localhost:5001/health
+```
+
+### 상세 배포 가이드
+
+자세한 배포 방법은 [DEPLOYMENT.md](DEPLOYMENT.md)를 참고하세요.
+
+지원하는 배포 방법:
+- Docker Compose (로컬/개발)
+- 클라우드 서버 (AWS EC2, DigitalOcean 등)
+- 직접 배포 (gunicorn)
 
 ## 라이선스
 

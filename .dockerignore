@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+backend/venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Environment files (will be mounted separately)
+.env.local
+.env.*.local
+
+# Database (will be mounted separately)
+*.db
+
+# Node modules (other projects)
+node_modules/
+01/
+02/
+03/
+CBT/
+
+# Documentation
+docs/
+*.md
+
+# Test files
+tests/
+*_test.py
+test_*.py
+
+# Screenshots and debug files
+*.png
+*.jpg
+*.jpeg
+*.html
+page_source.html
+debug_screenshot*.png
+error_screenshot*.png
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

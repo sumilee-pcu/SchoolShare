@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  schoolshare-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: schoolshare-api
+    ports:
+      - "5001:5001"
+    environment:
+      - SEOUL_OPENAPI_KEY=${SEOUL_OPENAPI_KEY}
+      - SCHOOLSHARE_TARGET_REGION=${SCHOOLSHARE_TARGET_REGION:-노원구}
+      - SCHOOLSHARE_BATCH_SIZE=${SCHOOLSHARE_BATCH_SIZE:-500}
+    volumes:
+      # Mount database directory to persist data
+      - ./data:/app/data
+      # Mount database file
+      - ./schoolshare.db:/app/schoolshare.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  data:
+    driver: local
