@@ -15,8 +15,9 @@ if [ ! -f "schoolshare.db" ]; then
     # Populate data in background to not delay server startup
     if [ -n "$SEOUL_OPENAPI_KEY" ]; then
         echo "Starting background data collection..."
-        nohup bash -c "sleep 5 && python -m scraper.ingest_school_facilities && echo 'Data collection completed!'" > data_collection.log 2>&1 &
-        echo "Data collection started in background. Check data_collection.log for progress."
+        # Run in background but output to stdout so we can see it in Railway logs
+        (sleep 5 && python -m scraper.ingest_school_facilities 2>&1 && echo "✅ Data collection completed!") &
+        echo "Data collection started in background (PID: $!)"
     else
         echo "Warning: SEOUL_OPENAPI_KEY not set. Skipping data collection."
     fi
