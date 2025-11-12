@@ -14,9 +14,8 @@ if [ ! -f "schoolshare.db" ]; then
 
     # Populate data immediately before starting server (only on first run)
     if [ -n "$SEOUL_OPENAPI_KEY" ]; then
-        echo "Collecting school facility data (this may take 1-2 minutes)..."
+        echo "Starting data collection (this may take 1-2 minutes)..."
         python -m scraper.ingest_school_facilities
-        echo "✅ Data collection completed!"
     else
         echo "Warning: SEOUL_OPENAPI_KEY not set. Skipping data collection."
     fi
