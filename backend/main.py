@@ -42,7 +42,7 @@ def healthcheck():
 def get_facilities():
     region = request.args.get("region", "노원구")
     facility_type = request.args.get("type")
-    availability = request.args.get("availability", "개방")
+    availability = request.args.get("availability")  # No default - show all if not specified
     limit_raw = request.args.get("limit", "50")
 
     try:
@@ -57,6 +57,8 @@ def get_facilities():
 
     session = SessionLocal()
     try:
+        app.logger.info(f"Query params: region={region}, type={facility_type}, availability={availability}, limit={limit}")
+
         query = (
             session.query(Facility, School)
             .join(School, Facility.school_id == School.id)
@@ -74,6 +76,8 @@ def get_facilities():
             .limit(limit)
             .all()
         )
+
+        app.logger.info(f"Query returned {len(facilities)} results")
 
         items = []
         for facility, school in facilities:
