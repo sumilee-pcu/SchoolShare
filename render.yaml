@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: schoolshare-api
+    runtime: docker
+    repo: https://github.com/sumilee-pcu/SchoolShare
+    branch: master
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: SEOUL_OPENAPI_KEY
+        sync: false
+      - key: SCHOOLSHARE_TARGET_REGION
+        value: 노원구
+      - key: SCHOOLSHARE_BATCH_SIZE
+        value: 500
+    healthCheckPath: /health
+    autoDeploy: true

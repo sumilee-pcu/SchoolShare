@@ -173,9 +173,18 @@ docker-compose exec schoolshare-api python -m scraper.ingest_school_facilities
 curl http://localhost:5001/health
 ```
 
+### 자동 배포 (GitHub 연동)
+
+**GitHub에 푸시하면 자동으로 배포!**
+
+[AUTO_DEPLOY.md](AUTO_DEPLOY.md)를 참고하여 Render, Railway, Fly.io 중 하나를 선택하세요.
+- **Render** (추천): 완전 무료, 가장 간단
+- **Railway**: 무료 크레딧 제공
+- **Fly.io**: 유연한 설정
+
 ### 상세 배포 가이드
 
-자세한 배포 방법은 [DEPLOYMENT.md](DEPLOYMENT.md)를 참고하세요.
+수동 배포 방법은 [DEPLOYMENT.md](DEPLOYMENT.md)를 참고하세요.
 
 지원하는 배포 방법:
 - Docker Compose (로컬/개발)
