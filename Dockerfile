@@ -27,16 +27,16 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 COPY backend/ ./backend/
 COPY scraper/ ./scraper/
 COPY .env* ./
+COPY start.sh ./
 
 # Create directory for SQLite database
 RUN mkdir -p /app/data
 
-# Expose port
+# Make startup script executable
+RUN chmod +x start.sh
+
+# Expose port (will be overridden by $PORT in production)
 EXPOSE 5001
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:5001/health')" || exit 1
-
-# Run with gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "--workers", "4", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "backend.main:app"]
+# Run with startup script that handles dynamic port
+CMD ["./start.sh"]
